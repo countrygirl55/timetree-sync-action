@@ -2,7 +2,7 @@ name: TimeTree Multi-Calendar Sync
 
 on:
   schedule:
-     # 毎日3時間おきに自動実行する設定（UTC表記で毎時0分）
+    # 毎日3時間おきに自動実行する設定（UTC表記で毎時0分）
     - cron: "17 */3 * * *"
   workflow_dispatch: # ボタンを押して手動で即時実行も可能にする
 
@@ -13,24 +13,20 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 1. porinpi-JAPANさんのリポジトリから同期プログラム一式を安全にダウンロードする
-      - name: Download timetree-sync-action script
-        run: |
-          git clone https://github.com repo-data
-
-      # 2. Python環境をセットアップする
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
 
-      # 3. 同期に必要な依存パッケージをインストールする
-      - name: Install Python dependencies
+      # 必要なツール（SDK）を直接ここでインストール
+      - name: Install dependencies
         run: |
-          cd repo-data/timetree-sync-action
-          pip install -r requirements.txt
+          pip install timetree-sdk google-api-python-client google-auth
 
-      # 4. 【グループ1：Timetree Mirror への同期】 (②、③、④)
+      # ==========================================
+      # 【グループ1】Timetree Mirror への同期 (②、③、④)
+      # ==========================================
+
       - name: Sync - ② 優奈ちゃん予定 (to Mirror)
         env:
           TIMETREE_EMAIL: ${{ secrets.TIMETREE_EMAIL }}
@@ -38,40 +34,35 @@ jobs:
           TIMETREE_CALENDAR_NAME: '優奈ちゃん予定'
           GOOGLE_CALENDAR_ID: ${{ secrets.GOOGLE_CALENDAR_ID_MIRROR }}
           GOOGLE_SERVICE_ACCOUNT_KEY: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}
-        run: |
-          cd repo-data/timetree-sync-action
-          python main.py
+        run: python sync.py
 
-      - name: Sync - ③ 25-26 League One (to Timetree Mirror)
+      - name: Sync - ③ 25-26 League One (to Mirror)
         env:
           TIMETREE_EMAIL: ${{ secrets.TIMETREE_EMAIL }}
           TIMETREE_PASSWORD: ${{ secrets.TIMETREE_PASSWORD }}
           TIMETREE_CALENDAR_NAME: '25-26 League One'
           GOOGLE_CALENDAR_ID: ${{ secrets.GOOGLE_CALENDAR_ID_MIRROR }}
           GOOGLE_SERVICE_ACCOUNT_KEY: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}
-        run: |
-          cd repo-data/timetree-sync-action
-          python main.py
+        run: python sync.py
 
-      - name: Sync - ④ ほかお家族カレンダー (to Timetree Mirror)
+      - name: Sync - ④ ほかお家族カレンダー (to Mirror)
         env:
           TIMETREE_EMAIL: ${{ secrets.TIMETREE_EMAIL }}
           TIMETREE_PASSWORD: ${{ secrets.TIMETREE_PASSWORD }}
           TIMETREE_CALENDAR_NAME: 'ほかお家族カレンダー'
           GOOGLE_CALENDAR_ID: ${{ secrets.GOOGLE_CALENDAR_ID_MIRROR }}
           GOOGLE_SERVICE_ACCOUNT_KEY: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}
-        run: |
-          cd repo-data/timetree-sync-action
-          python main.py
+        run: python sync.py
 
-      # 5. 【グループ2：Timetree Mirror ゆいちろくにこちくわ への同期】 (①)
+      # ==========================================
+      # 【グループ2】Timetree Mirror ゆいちろくにこちくわへの同期 (①)
+      # ==========================================
+
       - name: Sync - ① ゆいちろくにこちくわ (to Timetree Mirror ゆいちろくにこちくわ)
         env:
           TIMETREE_EMAIL: ${{ secrets.TIMETREE_EMAIL }}
           TIMETREE_PASSWORD: ${{ secrets.TIMETREE_PASSWORD }}
           TIMETREE_CALENDAR_NAME: 'ゆいちろくにこちくわ'
-          GOOGLE_CALENDAR_ID: ${{ secrets.GOOGLE_CALENDAR_ID_YUKUNCHI }}
+          GOOGLE_CALENDAR_ID: ${{ secrets.GOOGLE_CALENDAR_ID_MIRROR2 }}
           GOOGLE_SERVICE_ACCOUNT_KEY: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}
-        run: |
-          cd repo-data/timetree-sync-action
-          python main.py
+        run: python sync.py
