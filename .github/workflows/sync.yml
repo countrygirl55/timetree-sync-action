@@ -13,65 +13,46 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 1. 作者のリポジトリから同期プログラムをダウンロードしてくる
-      - name: Clone timetree-sync-action project
-        run: |
-          git clone https://github.com external-action
+      # ==========================================
+      # 【グループ1】Timetree Mirror への同期 (②、③、④)
+      # ==========================================
 
-      # 2. Python環境のセットアップと、必要なパッケージのインストール
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.10'
-          cache: 'pip'
-
-      - name: Install dependencies
-        run: |
-          cd external-action/timetree-sync-action
-          pip install -r requirements.txt
-
-      # 3. 【グループ1】Timetree Mirror  への同期 (②、③、④)
       - name: Sync - ② 優奈ちゃん予定 (to Mirror)
-        env:
-          TIMETREE_EMAIL: ${{ secrets.TIMETREE_EMAIL }}
-          TIMETREE_PASSWORD: ${{ secrets.TIMETREE_PASSWORD }}
-          TIMETREE_CALENDAR_NAME: '優奈ちゃん予定'
-          GOOGLE_CALENDAR_ID: ${{ secrets.GOOGLE_CALENDAR_ID_MIRROR }}
-          GOOGLE_SERVICE_ACCOUNT_KEY: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}
-        run: |
-          cd external-action/timetree-sync-action
-          python main.py
+        uses: NishiyamaYuto/timetree-to-google-calendar@v1
+        with:
+          timetree_email: ${{ secrets.TIMETREE_EMAIL }}
+          timetree_password: ${{ secrets.TIMETREE_PASSWORD }}
+          timetree_calendar_name: '優奈ちゃん予定'
+          google_calendar_id: ${{ secrets.GOOGLE_CALENDAR_ID_MIRROR }}
+          google_service_account_key: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}
 
-      - name: Sync - ③ 25-26 League one (to Mirror)
-        env:
-          TIMETREE_EMAIL: ${{ secrets.TIMETREE_EMAIL }}
-          TIMETREE_PASSWORD: ${{ secrets.TIMETREE_PASSWORD }}
-          TIMETREE_CALENDAR_NAME: '25-26 League one'
-          GOOGLE_CALENDAR_ID: ${{ secrets.GOOGLE_CALENDAR_ID_MIRROR }}
-          GOOGLE_SERVICE_ACCOUNT_KEY: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}
-        run: |
-          cd external-action/timetree-sync-action
-          python main.py
+      - name: Sync - ③ 25-26 League One (to Mirror)
+        uses: NishiyamaYuto/timetree-to-google-calendar@v1
+        with:
+          timetree_email: ${{ secrets.TIMETREE_EMAIL }}
+          timetree_password: ${{ secrets.TIMETREE_PASSWORD }}
+          timetree_calendar_name: '25-26 League One'
+          google_calendar_id: ${{ secrets.GOOGLE_CALENDAR_ID_MIRROR }}
+          google_service_account_key: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}
 
       - name: Sync - ④ ほかお家族カレンダー (to Mirror)
-        env:
-          TIMETREE_EMAIL: ${{ secrets.TIMETREE_EMAIL }}
-          TIMETREE_PASSWORD: ${{ secrets.TIMETREE_PASSWORD }}
-          TIMETREE_CALENDAR_NAME: 'ほかお家族カレンダー'
-          GOOGLE_CALENDAR_ID: ${{ secrets.GOOGLE_CALENDAR_ID_MIRROR }}
-          GOOGLE_SERVICE_ACCOUNT_KEY: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}
-        run: |
-          cd external-action/timetree-sync-action
-          python main.py
+        uses: NishiyamaYuto/timetree-to-google-calendar@v1
+        with:
+          timetree_email: ${{ secrets.TIMETREE_EMAIL }}
+          timetree_password: ${{ secrets.TIMETREE_PASSWORD }}
+          timetree_calendar_name: 'ほかお家族カレンダー'
+          google_calendar_id: ${{ secrets.GOOGLE_CALENDAR_ID_MIRROR }}
+          google_service_account_key: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}
 
-      # 4. 【グループ2】Timetree Mirror ゆいちろくにこちくわ への同期 (①)
-      - name: Sync - ① ゆいちろくにこちくわ (to Timetree Mirror ゆいちろくにこちくわ)
-        env:
-          TIMETREE_EMAIL: ${{ secrets.TIMETREE_EMAIL }}
-          TIMETREE_PASSWORD: ${{ secrets.TIMETREE_PASSWORD }}
-          TIMETREE_CALENDAR_NAME: 'ゆいちろくにこちくわ'
-          GOOGLE_CALENDAR_ID: ${{ secrets.GOOGLE_CALENDAR_ID_YUKUNCHI }}
-          GOOGLE_SERVICE_ACCOUNT_KEY: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}
-        run: |
-          cd external-action/timetree-sync-action
-          python main.py
+      # ==========================================
+      # 【グループ2】Timetree Mirror ゆいちろくにこちくわ への同期 (①)
+      # ==========================================
+
+      - name: Sync - ① ゆいちろくにこちくわ (to Timetree Mirror ゆいちろくにこちくわ )
+        uses: NishiyamaYuto/timetree-to-google-calendar@v1
+        with:
+          timetree_email: ${{ secrets.TIMETREE_EMAIL }}
+          timetree_password: ${{ secrets.TIMETREE_PASSWORD }}
+          timetree_calendar_name: 'ゆいちろくにこちくわ'
+          google_calendar_id: ${{ secrets.GOOGLE_CALENDAR_ID_YUKUNCHI }}
+          google_service_account_key: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}
