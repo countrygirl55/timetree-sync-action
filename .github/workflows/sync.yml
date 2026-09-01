@@ -14,7 +14,7 @@ jobs:
         uses: actions/checkout@v4
 
       # ==========================================
-      # 【グループ1】timetree mirror への同期 (②、③、④)
+      # 【グループ1】Timetree Mirror への同期 (②、③、④)
       # ==========================================
 
       - name: Sync - ② 優奈ちゃん予定
@@ -42,7 +42,7 @@ jobs:
           google_calendar_id: ${{ secrets.GOOGLE_CALENDAR_ID_MIRROR }}
 
       # ==========================================
-      # 【グループ2】timetree mirror2 への同期 (①)
+      # 【グループ2】Timetree Mirror ゆいちろくにこちくわ への同期 (①)
       # ==========================================
 
       - name: Sync - ① ゆいちろくにこちくわ
@@ -51,4 +51,4 @@ jobs:
           timetree_email: ${{ secrets.TIMETREE_EMAIL }}
           timetree_password: ${{ secrets.TIMETREE_PASSWORD }}
           timetree_calendar_name: 'ゆいちろくにこちくわ'
-          google_calendar_id: ${{ secrets.GOOGLE_CALENDAR_ID_MIRROR2 }}
+          google_calendar_id: ${{ secrets.GOOGLE_CALENDAR_ID_YUKUNCHI }}
