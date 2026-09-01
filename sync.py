@@ -1,6 +1,6 @@
 import os
 import json
-from timetree_sdk import TimeTreeAPI
+from timetree_sdk import TimeTreeApi
 
 def main():
     # GitHub Secrets から環境変数を読み込む
