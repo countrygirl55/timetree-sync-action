@@ -1,39 +1,54 @@
-name: TimeTree Sync
+name: TimeTree Multi-Calendar Sync
 
 on:
-  workflow_dispatch:
-
-  # Public配布用では定期実行を無効化しています。
-  # 利用する場合は、下記3行の「#」を削除してください。
-  #
-  # schedule:
-  #   - cron: "15 */6 * * *"
+  schedule:
+    # 毎日3時間おきに自動実行する設定（UTC表記で毎時0分）
+    - cron: "17 */3 * * *"
+  workflow_dispatch: # ボタンを押して手動で即時実行も可能にする
 
 jobs:
-  sync:
+  sync-all:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
+      # ==========================================
+      # 【グループ1】timetree mirror への同期 (②、③、④)
+      # ==========================================
+
+      - name: Sync - ② 優奈ちゃん予定
+        uses: porinpi-JAPAN/timetree-sync-action@v1
         with:
-          python-version: "3.12"
+          timetree_email: ${{ secrets.TIMETREE_EMAIL }}
+          timetree_password: ${{ secrets.TIMETREE_PASSWORD }}
+          timetree_calendar_name: '優奈ちゃん予定'
+          google_calendar_id: ${{ secrets.GOOGLE_CALENDAR_ID_MIRROR }}
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install ./vendor/timetree_exporter
+      - name: Sync - ③ 25-26 League One
+        uses: porinpi-JAPAN/timetree-sync-action@v1
+        with:
+          timetree_email: ${{ secrets.TIMETREE_EMAIL }}
+          timetree_password: ${{ secrets.TIMETREE_PASSWORD }}
+          timetree_calendar_name: '25-26 League One'
+          google_calendar_id: ${{ secrets.GOOGLE_CALENDAR_ID_MIRROR }}
 
-      - name: Run
-        env:
-          TIMETREE_EMAIL: ${{ secrets.TIMETREE_EMAIL }}
-          TIMETREE_PASSWORD: ${{ secrets.TIMETREE_PASSWORD }}
-          TIMETREE_CALENDAR_CODE: ${{ secrets.TIMETREE_CALENDAR_CODE }}
-          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
-          GOOGLE_CALENDAR_ID: ${{ secrets.GOOGLE_CALENDAR_ID }}
-        run: |
-          python src/main.py
+      - name: Sync - ④ ほかお家族カレンダー
+        uses: porinpi-JAPAN/timetree-sync-action@v1
+        with:
+          timetree_email: ${{ secrets.TIMETREE_EMAIL }}
+          timetree_password: ${{ secrets.TIMETREE_PASSWORD }}
+          timetree_calendar_name: 'ほかお家族カレンダー'
+          google_calendar_id: ${{ secrets.GOOGLE_CALENDAR_ID_MIRROR }}
+
+      # ==========================================
+      # 【グループ2】timetree mirror2 への同期 (①)
+      # ==========================================
+
+      - name: Sync - ① ゆいちろくにこちくわ
+        uses: porinpi-JAPAN/timetree-sync-action@v1
+        with:
+          timetree_email: ${{ secrets.TIMETREE_EMAIL }}
+          timetree_password: ${{ secrets.TIMETREE_PASSWORD }}
+          timetree_calendar_name: 'ゆいちろくにこちくわ'
+          google_calendar_id: ${{ secrets.GOOGLE_CALENDAR_ID_MIRROR2 }}
